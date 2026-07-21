@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=1080">
     <title>ICE LAB | Premium Ice Delivery Gaborone Botswana</title>
     <meta name="description"
         content="ICE LAB premium ice delivery in Gaborone Botswana for events, bars, restaurants and bulk orders.">
@@ -85,7 +85,7 @@
 
         /* HERO */
         .hero {
-            min-height: 100vh;
+            height: 720px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -304,6 +304,74 @@
             margin-top: 0;
         }
 
+        /* ADDRESS AUTOCOMPLETE */
+        .address-field {
+            position: relative;
+        }
+
+        .address-field-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 6px;
+        }
+
+        .address-field-actions button {
+            background: none;
+            border: none;
+            color: var(--accent-soft);
+            font-size: 12px;
+            font-family: Poppins;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 0;
+        }
+
+        .suggestions {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: calc(100% + 4px);
+            background: #0B2230;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+            z-index: 20;
+            display: none;
+        }
+
+        .suggestions.open {
+            display: block;
+        }
+
+        .suggestions div {
+            padding: 11px 14px;
+            font-size: 13px;
+            color: var(--ink);
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+        }
+
+        .suggestions div:last-child {
+            border-bottom: none;
+        }
+
+        .suggestions div:hover,
+        .suggestions div.active {
+            background: rgba(0, 217, 255, .12);
+            color: var(--accent-soft);
+        }
+
+        .address-status {
+            font-size: 12px;
+            color: var(--ink-dim);
+            margin-top: 6px;
+            min-height: 16px;
+        }
+
+        .address-status.confirmed {
+            color: var(--accent-soft);
+        }
+
         .price-box {
             padding: 20px;
             margin-top: 20px;
@@ -386,15 +454,6 @@
             border-top: 1px solid var(--line);
         }
 
-        @media(max-width:700px) {
-            nav .links {
-                display: none;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
 
@@ -492,7 +551,15 @@
                 <option value="outside">Surrounding Areas</option>
             </select>
 
-            <input id="location" placeholder="Delivery Location / Address" required>
+            <div class="address-field">
+                <input id="location" placeholder="Delivery Location / Address (e.g. Extension 33, Plot 10812)"
+                    autocomplete="off" required>
+                <div class="suggestions" id="suggestions"></div>
+            </div>
+            <div class="address-field-actions">
+                <button type="button" onclick="locateMe()">Use my current location</button>
+            </div>
+            <p class="address-status" id="addressStatus">Start typing and pick a match, or use your current location.</p>
 
             <div class="form-row">
                 <div>
@@ -582,6 +649,202 @@
             lastScroll = currentScroll;
         });
 
+        /* ADDRESS AUTOCOMPLETE + CURRENT LOCATION */
+        let pinnedLat = null;
+        let pinnedLng = null;
+
+        let locationInput = document.getElementById('location');
+        let suggestionsBox = document.getElementById('suggestions');
+        let addressStatus = document.getElementById('addressStatus');
+        let debounceTimer = null;
+        let activeIndex = -1;
+
+        // Known Gaborone areas/extensions so suggestions work instantly, even
+        // with no internet or if the live lookup below doesn't respond.
+        let gaboroneAreas = [
+            "Extension 2", "Extension 4", "Extension 6", "Extension 9", "Extension 11",
+            "Extension 12", "Extension 14", "Extension 15", "Extension 16", "Extension 20",
+            "Extension 22", "Extension 24", "Extension 25", "Extension 27", "Extension 28",
+            "Extension 29", "Extension 30", "Extension 31", "Extension 32", "Extension 33",
+            "Extension 39", "Extension 40", "Extension 42", "Extension 43", "Extension 44",
+            "Extension 46", "Extension 47", "Extension 48", "Extension 49", "Extension 50",
+            "Extension 51", "Extension 52", "Extension 53", "Extension 54", "Extension 58",
+            "Extension 59", "Extension 60", "Extension 61", "Extension 62", "Extension 63",
+            "Extension 64", "Extension 66", "Extension 68", "Extension 71", "Extension 72",
+            "Gaborone West Phase 1", "Gaborone West Phase 2", "Gaborone North", "Gaborone CBD",
+            "The Village", "Bontleng", "Naledi", "Old Naledi", "White City", "Ledumang",
+            "Kgale View", "Block 3", "Block 5", "Block 6", "Block 7", "Block 8", "Block 9",
+            "Block 10", "Phakalane", "Tlokweng", "Mogoditshane", "Broadhurst"
+        ];
+
+        function localMatches(rawQuery) {
+            let digits = (rawQuery.match(/\d+/g) || []).join(' ');
+            let text = rawQuery.replace(/\d+/g, '').trim().toLowerCase();
+
+            if (!text) return [];
+
+            return gaboroneAreas
+                .filter(function (a) { return a.toLowerCase().indexOf(text) !== -1; })
+                .slice(0, 5)
+                .map(function (a) {
+                    return {
+                        display_name: digits ? (a + ", Plot " + digits + ", Gaborone") : (a + ", Gaborone"),
+                        lat: null,
+                        lon: null
+                    };
+                });
+        }
+
+        function setStatus(text, confirmed) {
+            addressStatus.innerText = text;
+            addressStatus.classList.toggle('confirmed', !!confirmed);
+        }
+
+        function closeSuggestions() {
+            suggestionsBox.classList.remove('open');
+            suggestionsBox.innerHTML = '';
+            activeIndex = -1;
+        }
+
+        function selectSuggestion(item) {
+            locationInput.value = item.display_name;
+
+            if (item.lat !== null && item.lat !== undefined) {
+                pinnedLat = parseFloat(item.lat);
+                pinnedLng = parseFloat(item.lon);
+            } else {
+                pinnedLat = null;
+                pinnedLng = null;
+            }
+
+            closeSuggestions();
+            setStatus("Confirmed: " + item.display_name, true);
+        }
+
+        function renderSuggestions(results) {
+            suggestionsBox.innerHTML = '';
+
+            if (!results.length) {
+                closeSuggestions();
+                return;
+            }
+
+            results.forEach(function (item) {
+                let row = document.createElement('div');
+                row.innerText = item.display_name;
+                row.addEventListener('click', function () {
+                    selectSuggestion(item);
+                });
+                suggestionsBox.appendChild(row);
+            });
+
+            suggestionsBox.classList.add('open');
+        }
+
+        locationInput.addEventListener('input', function () {
+            pinnedLat = null;
+            pinnedLng = null;
+            setStatus("Start typing and pick a match, or use your current location.", false);
+
+            let query = locationInput.value.trim();
+            clearTimeout(debounceTimer);
+
+            if (query.length < 3) {
+                closeSuggestions();
+                return;
+            }
+
+            // Show instant local matches right away, no network needed.
+            let local = localMatches(query);
+            renderSuggestions(local);
+
+            // Then try to enrich with live results, without blocking the UI.
+            debounceTimer = setTimeout(function () {
+                let controller = new AbortController();
+                let timeout = setTimeout(function () { controller.abort(); }, 5000);
+                let url = "https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&countrycodes=bw&q=" + encodeURIComponent(query);
+
+                fetch(url, { signal: controller.signal })
+                    .then(function (res) { return res.json(); })
+                    .then(function (data) {
+                        clearTimeout(timeout);
+                        let liveNames = local.map(function (i) { return i.display_name; });
+                        let merged = local.concat(
+                            data.filter(function (d) { return liveNames.indexOf(d.display_name) === -1; })
+                        );
+                        renderSuggestions(merged);
+                    })
+                    .catch(function () {
+                        // Live lookup unavailable — local matches already shown, nothing more to do.
+                    });
+            }, 400);
+        });
+
+        locationInput.addEventListener('keydown', function (e) {
+            let rows = suggestionsBox.querySelectorAll('div');
+            if (!rows.length) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                activeIndex = (activeIndex + 1) % rows.length;
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                activeIndex = (activeIndex - 1 + rows.length) % rows.length;
+            } else if (e.key === 'Enter' && activeIndex > -1) {
+                e.preventDefault();
+                rows[activeIndex].click();
+                return;
+            } else {
+                return;
+            }
+
+            rows.forEach(function (r, i) { r.classList.toggle('active', i === activeIndex); });
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.address-field')) closeSuggestions();
+        });
+
+        function locateMe() {
+            if (!navigator.geolocation) {
+                setStatus("Location services are not available in this browser.", false);
+                return;
+            }
+
+            setStatus("Finding your location...", false);
+
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    let lat = position.coords.latitude;
+                    let lng = position.coords.longitude;
+
+                    pinnedLat = lat;
+                    pinnedLng = lng;
+                    setStatus("Confirmed from your current location.", true);
+                    locationInput.value = lat.toFixed(5) + ", " + lng.toFixed(5);
+
+                    let controller = new AbortController();
+                    let timeout = setTimeout(function () { controller.abort(); }, 5000);
+                    let url = "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + lng;
+
+                    fetch(url, { signal: controller.signal })
+                        .then(function (res) { return res.json(); })
+                        .then(function (data) {
+                            clearTimeout(timeout);
+                            if (data && data.display_name) {
+                                locationInput.value = data.display_name;
+                            }
+                        })
+                        .catch(function () {
+                            // Reverse lookup unavailable — coordinates are already filled in and confirmed.
+                        });
+                },
+                function () {
+                    setStatus("Couldn't get your location. Type your address instead.", false);
+                }
+            );
+        }
+
         /* PRICE CALCULATOR */
         function calcPrice() {
             let quantity = parseInt(document.getElementById("bags").value) || 0;
@@ -634,11 +897,15 @@
             let notes = document.getElementById("notes").value;
             let price = document.getElementById("total").innerText;
 
+            let pinLine = (pinnedLat !== null && pinnedLng !== null)
+                ? `\nPinned Location: https://www.google.com/maps?q=${pinnedLat},${pinnedLng}`
+                : "";
+
             let message = `ICE LAB ORDER
 Name: ${name}
 Phone: ${phone}
 Delivery Area: ${zone}
-Location: ${location}
+Location: ${location}${pinLine}
 Delivery Date: ${date}
 Delivery Time: ${time}
 Ice Type: ${iceType}
