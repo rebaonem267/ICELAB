@@ -6,21 +6,31 @@
     <meta name="viewport" content="width=1080">
     <title>ICE LAB | Premium Ice Delivery Gaborone Botswana</title>
     <meta name="description"
-        content="ICE LAB premium ice delivery in Gaborone Botswana for events, bars, restaurants and bulk orders.">
-    <meta name="keywords" content="ice delivery Gaborone, ice supplier Botswana, cube ice Botswana">
+        content="ICE LAB delivers cube, block and crushed ice across Gaborone Botswana — same-day delivery for events, weddings, bars, restaurants and bulk orders.">
+    <meta name="keywords"
+        content="ice delivery Gaborone, ice supplier Botswana, cube ice Botswana, block ice Botswana, crushed ice Botswana, bagged ice Gaborone, ice delivery Botswana, bulk ice orders Botswana, wholesale ice Botswana, party ice delivery, wedding ice supply, event ice supply Gaborone, cocktail ice Gaborone, bar ice supply Botswana, restaurant ice supply Botswana, same day ice delivery Gaborone, ice near me Gaborone, ice cubes for sale Botswana, ice blocks for sale Botswana">
+
+    <!-- Security: restrict what the page can load/do -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://nominatim.openstreetmap.org; base-uri 'self'; form-action 'self' https://wa.me; frame-ancestors 'none'; object-src 'none';">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), payment=()">
+
     <link
         href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Poppins:wght@300;400;600&display=swap"
         rel="stylesheet">
 
     <style>
         :root {
-            --bg: #06131C;
-            --bg-alt: #0A1B26;
-            --ink: #EAFBFF;
-            --ink-dim: #9FC6D2;
-            --accent: #00D9FF;
-            --accent-soft: #67D8FF;
-            --line: rgba(0, 217, 255, .18);
+            --bg: #10181A;
+            --bg-alt: #161F21;
+            --ink: #EAF2F6;
+            --ink-dim: #62838F;
+            --accent: #4FB6C4;
+            --accent-soft: #7FCAD4;
+            --clay: #6B7B8C;
+            --clay-soft: #8B9BAA;
+            --line: rgba(79, 182, 196, .16);
         }
 
         * {
@@ -36,6 +46,59 @@
             line-height: 1.6;
         }
 
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: .001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .001ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(22px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes drift {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            50% {
+                transform: translate(14px, -18px) rotate(180deg);
+            }
+
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(3.4);
+                opacity: 0;
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity .7s ease, transform .7s ease;
+        }
+
+        .reveal.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         h1,
         h2,
         h3 {
@@ -46,17 +109,30 @@
         /* NAVIGATION */
         nav {
             position: fixed;
-            top: 0;
-            width: 100%;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 64px);
+            max-width: 1080px;
             z-index: 1000;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 18px 32px;
-            background: rgba(6, 19, 28, .75);
+            padding: 16px 30px;
+            background: rgba(16, 24, 26, .78);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--line);
-            transition: transform .4s ease;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            box-shadow: 0 12px 34px rgba(0, 0, 0, .35);
+            transition: transform .4s ease, top .4s ease, box-shadow .3s ease;
+        }
+
+        nav.hidden {
+            transform: translateX(-50%) translateY(-140%);
+        }
+
+        nav:hover {
+            box-shadow: 0 16px 40px rgba(0, 0, 0, .45), 0 0 0 1px var(--accent) inset;
         }
 
         .logo {
@@ -68,6 +144,7 @@
         }
 
         nav .links a {
+            position: relative;
             color: var(--ink);
             text-decoration: none;
             margin-left: 26px;
@@ -76,6 +153,18 @@
             text-transform: uppercase;
             opacity: .85;
             transition: .25s;
+            padding-bottom: 3px;
+        }
+
+        nav .links a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent);
+            transition: width .3s ease;
         }
 
         nav .links a:hover {
@@ -83,8 +172,13 @@
             opacity: 1;
         }
 
+        nav .links a:hover::after {
+            width: 100%;
+        }
+
         /* HERO */
         .hero {
+            position: relative;
             height: 720px;
             display: flex;
             flex-direction: column;
@@ -92,9 +186,47 @@
             align-items: center;
             text-align: center;
             padding: 120px 20px 60px;
+            overflow: hidden;
             background:
-                radial-gradient(circle at 50% 20%, rgba(0, 217, 255, .18), transparent 55%),
-                linear-gradient(180deg, #06131C 0%, #081722 100%);
+                radial-gradient(circle at 50% 15%, rgba(79, 182, 196, .14), transparent 55%),
+                linear-gradient(180deg, #10181A 0%, #131D1F 100%);
+        }
+
+        /* Fractured ice-crack pattern, dulled way down so it reads as texture, not noise */
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: .35;
+            background-image:
+                linear-gradient(115deg, transparent 46%, rgba(79, 182, 196, .10) 47%, transparent 48%),
+                linear-gradient(25deg, transparent 63%, rgba(79, 182, 196, .08) 64%, transparent 65%),
+                linear-gradient(155deg, transparent 31%, rgba(107, 123, 140, .07) 32%, transparent 33%),
+                linear-gradient(72deg, transparent 78%, rgba(79, 182, 196, .07) 79%, transparent 80%);
+            background-size: 340px 340px, 260px 260px, 420px 420px, 300px 300px;
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(234, 240, 239, .05) 1px, transparent 1px);
+            background-size: 22px 22px;
+            pointer-events: none;
+        }
+
+        .hero>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1,
+        .hero p,
+        .hero .stock,
+        .hero-actions {
+            opacity: 0;
+            animation: fadeUp .8s ease forwards;
         }
 
         .hero h1 {
@@ -102,6 +234,7 @@
             max-width: 820px;
             color: var(--accent);
             letter-spacing: 1px;
+            animation-delay: .05s;
         }
 
         .hero p {
@@ -109,6 +242,7 @@
             max-width: 560px;
             color: var(--ink-dim);
             margin-top: 18px;
+            animation-delay: .22s;
         }
 
         .stock {
@@ -116,17 +250,71 @@
             padding: 9px 22px;
             border-radius: 30px;
             font-size: 13px;
-            background: rgba(0, 217, 255, .1);
-            border: 1px solid var(--accent);
-            color: var(--accent-soft);
+            background: rgba(107, 123, 140, .12);
+            border: 1px solid var(--clay);
+            color: var(--clay-soft);
             letter-spacing: .5px;
+            animation-delay: .38s;
         }
 
         .hero-actions {
             margin-top: 10px;
+            animation-delay: .5s;
+        }
+
+        /* Drifting ice-crystal accents in the hero */
+        .crystal {
+            position: absolute;
+            border: 1px solid rgba(79, 182, 196, .3);
+            transform-origin: center;
+            pointer-events: none;
+            animation: drift ease-in-out infinite;
+        }
+
+        .crystal.c1 {
+            top: 18%;
+            left: 12%;
+            width: 14px;
+            height: 14px;
+            transform: rotate(45deg);
+            animation-duration: 9s;
+        }
+
+        .crystal.c2 {
+            top: 30%;
+            right: 15%;
+            width: 20px;
+            height: 20px;
+            border-color: rgba(107, 123, 140, .35);
+            transform: rotate(20deg);
+            animation-duration: 12s;
+            animation-delay: 1.2s;
+        }
+
+        .crystal.c3 {
+            bottom: 22%;
+            left: 22%;
+            width: 10px;
+            height: 10px;
+            transform: rotate(10deg);
+            animation-duration: 7s;
+            animation-delay: .6s;
+        }
+
+        .crystal.c4 {
+            bottom: 30%;
+            right: 26%;
+            width: 16px;
+            height: 16px;
+            border-color: rgba(79, 182, 196, .22);
+            transform: rotate(60deg);
+            animation-duration: 10.5s;
+            animation-delay: 2s;
         }
 
         .btn {
+            position: relative;
+            overflow: hidden;
             padding: 13px 28px;
             margin: 6px;
             border-radius: 8px;
@@ -141,19 +329,31 @@
             transition: .25s;
         }
 
+        .btn .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .45);
+            transform: scale(0);
+            animation: ripple .6s ease-out forwards;
+            pointer-events: none;
+        }
+
         .btn:hover {
             background: var(--accent);
             color: var(--bg);
-            box-shadow: 0 0 20px rgba(0, 217, 255, .35);
+            box-shadow: 0 0 20px rgba(79, 182, 196, .3);
         }
 
         .btn.solid {
-            background: var(--accent);
-            color: var(--bg);
+            background: var(--clay);
+            color: #EAF2F6;
+            border-color: var(--clay);
         }
 
         .btn.solid:hover {
-            background: var(--accent-soft);
+            background: var(--clay-soft);
+            border-color: var(--clay-soft);
+            box-shadow: 0 0 20px rgba(107, 123, 140, .3);
         }
 
         /* SECTIONS */
@@ -164,11 +364,28 @@
         }
 
         section.alt {
+            position: relative;
             background: var(--bg-alt);
             max-width: none;
+            overflow: hidden;
+        }
+
+        /* Subtle diagonal frost stripes, restricted to alt sections only */
+        section.alt::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(135deg,
+                    rgba(79, 182, 196, .035) 0px,
+                    rgba(79, 182, 196, .035) 1px,
+                    transparent 1px,
+                    transparent 26px);
+            pointer-events: none;
         }
 
         section.alt>* {
+            position: relative;
+            z-index: 1;
             max-width: 1080px;
             margin-left: auto;
             margin-right: auto;
@@ -197,17 +414,35 @@
         }
 
         .card {
-            background: rgba(255, 255, 255, .03);
+            position: relative;
+            overflow: hidden;
+            background: rgba(255, 255, 255, .025);
             padding: 26px;
             border-radius: 12px;
             border: 1px solid var(--line);
-            transition: .25s;
+            transition: transform .25s, border-color .25s, box-shadow .25s;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -60%;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(115deg, transparent, rgba(79, 182, 196, .07), transparent);
+            transform: skewX(-20deg);
+            transition: left .6s ease;
+        }
+
+        .card:hover::before {
+            left: 130%;
         }
 
         .card:hover {
             transform: translateY(-6px);
             border-color: var(--accent);
-            box-shadow: 0 12px 30px rgba(0, 217, 255, .15);
+            box-shadow: 0 12px 30px rgba(79, 182, 196, .12);
         }
 
         .card h3 {
@@ -224,7 +459,7 @@
 
         /* PRICING */
         .price-group-title {
-            color: var(--accent-soft);
+            color: var(--clay-soft);
             font-family: Orbitron;
             font-size: 15px;
             letter-spacing: 1px;
@@ -261,7 +496,7 @@
             width: 100%;
             padding: 13px 14px;
             margin-top: 12px;
-            background: #0B2230;
+            background: #182427;
             border: 1px solid transparent;
             border-radius: 8px;
             color: var(--ink);
@@ -331,7 +566,7 @@
             left: 0;
             right: 0;
             top: calc(100% + 4px);
-            background: #0B2230;
+            background: #182427;
             border: 1px solid var(--line);
             border-radius: 8px;
             overflow: hidden;
@@ -357,7 +592,7 @@
 
         .suggestions div:hover,
         .suggestions div.active {
-            background: rgba(0, 217, 255, .12);
+            background: rgba(79, 182, 196, .1);
             color: var(--accent-soft);
         }
 
@@ -369,7 +604,7 @@
         }
 
         .address-status.confirmed {
-            color: var(--accent-soft);
+            color: var(--clay-soft);
         }
 
         .price-box {
@@ -377,7 +612,7 @@
             margin-top: 20px;
             border-radius: 12px;
             border: 1px solid var(--line);
-            background: rgba(0, 217, 255, .04);
+            background: rgba(79, 182, 196, .035);
         }
 
         .price-box p {
@@ -399,11 +634,11 @@
         }
 
         .price-box .total-row strong {
-            color: var(--accent-soft);
+            color: var(--clay-soft);
         }
 
         .price-box .total-row span {
-            color: var(--accent);
+            color: var(--clay);
             font-family: Orbitron;
         }
 
@@ -435,15 +670,15 @@
             position: fixed;
             right: 22px;
             bottom: 22px;
-            background: var(--accent);
-            color: var(--bg);
+            background: var(--clay);
+            color: #EAF2F6;
             padding: 14px 24px;
             border-radius: 40px;
             font-weight: 600;
             font-size: 14px;
             text-decoration: none;
             z-index: 999;
-            box-shadow: 0 6px 20px rgba(0, 217, 255, .35);
+            box-shadow: 0 6px 20px rgba(107, 123, 140, .3);
         }
 
         footer {
@@ -471,12 +706,16 @@
 
     <!-- HERO -->
     <div class="hero">
+        <span class="crystal c1"></span>
+        <span class="crystal c2"></span>
+        <span class="crystal c3"></span>
+        <span class="crystal c4"></span>
         <h1>Premium Ice Delivery in Gaborone</h1>
         <p>Fast, reliable ice supply for events, bars, restaurants and bulk orders.</p>
         <div class="stock">ICE AVAILABLE TODAY</div>
         <div class="hero-actions">
             <a class="btn solid" href="#order">Order Now</a>
-            <a class="btn" href="https://wa.me/26774531063">WhatsApp Us</a>
+            <a class="btn" href="https://wa.me/26774531063" target="_blank" rel="noopener noreferrer">WhatsApp Us</a>
         </div>
     </div>
 
@@ -484,7 +723,7 @@
     <section id="services">
         <h2 class="section-title">Our Services</h2>
         <p class="section-sub">Ice supply built around your business or event</p>
-        <div class="cards">
+        <div class="cards reveal">
             <div class="card">
                 <h3>Event Ice Supply</h3>
                 <p>Large-scale ice for weddings, parties and corporate events.</p>
@@ -510,7 +749,7 @@
         <p class="section-sub">Prices drop automatically at higher quantities</p>
 
         <div class="price-group-title">Cube Ice</div>
-        <div class="cards">
+        <div class="cards reveal">
             <div class="card price">
                 <h3>Single Bag</h3><span class="amount">P20</span>
             </div>
@@ -523,7 +762,7 @@
         </div>
 
         <div class="price-group-title">Block Ice</div>
-        <div class="cards">
+        <div class="cards reveal">
             <div class="card price">
                 <h3>Single Block</h3><span class="amount">P25</span>
             </div>
@@ -541,10 +780,18 @@
         <h2 class="section-title">Place Your Order</h2>
         <p class="section-sub">Fill in your details and we'll confirm on WhatsApp</p>
 
-        <form onsubmit="sendOrder(event)">
+        <form onsubmit="sendOrder(event)" autocomplete="on" class="reveal">
 
-            <input id="name" placeholder="Full Name" required>
-            <input id="phone" placeholder="Phone Number" required>
+            <!-- Honeypot: hidden from real visitors, bots tend to fill every field -->
+            <div style="position:absolute; left:-9999px; opacity:0;" aria-hidden="true">
+                <label for="company">Leave this field empty</label>
+                <input type="text" id="company" name="company" tabindex="-1" autocomplete="off">
+            </div>
+
+            <input id="name" placeholder="Full Name" maxlength="60" pattern="[A-Za-z\s\-'.]{2,60}"
+                title="Letters, spaces, hyphens and apostrophes only" required>
+            <input id="phone" placeholder="Phone Number" type="tel" maxlength="20" pattern="[\d\s\+\-\(\)]{6,20}"
+                title="Digits, spaces, +, - and () only" required>
 
             <select id="zone" onchange="calcPrice()">
                 <option value="gaborone">Within Gaborone</option>
@@ -553,7 +800,7 @@
 
             <div class="address-field">
                 <input id="location" placeholder="Delivery Location / Address (e.g. Extension 33, Plot 10812)"
-                    autocomplete="off" required>
+                    autocomplete="off" maxlength="120" required>
                 <div class="suggestions" id="suggestions"></div>
             </div>
             <div class="address-field-actions">
@@ -577,9 +824,9 @@
                 <option value="block">Block Ice</option>
             </select>
 
-            <input id="bags" type="number" placeholder="Quantity" oninput="calcPrice()" required>
+            <input id="bags" type="number" placeholder="Quantity" oninput="calcPrice()" min="1" max="500" required>
 
-            <textarea id="notes" placeholder="Special Instructions"></textarea>
+            <textarea id="notes" placeholder="Special Instructions" maxlength="300"></textarea>
 
             <div class="price-box">
                 <p><strong>Ice Price</strong> <span>P<span id="bagPrice">0</span></span></p>
@@ -593,29 +840,10 @@
         </form>
     </section>
 
-    <!-- CONTACT -->
-    <section id="contact" class="alt">
-        <h2 class="section-title">Contact Ice Lab</h2>
-        <div class="cards">
-            <div class="card contact">
-                <h3>WhatsApp</h3>
-                <p>+267 74 531 063</p>
-            </div>
-            <div class="card contact">
-                <h3>Business Hours</h3>
-                <p>Open Daily</p>
-            </div>
-            <div class="card contact">
-                <h3>Location</h3>
-                <p>Broadhurst,Gaborone</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- DELIVERY INFORMATION (final section) -->
+    <!-- DELIVERY INFORMATION -->
     <section id="delivery" class="delivery-info">
         <h2 class="section-title">Delivery Information</h2>
-        <div class="cards">
+        <div class="cards reveal">
             <div class="card">
                 <h3>Within Gaborone</h3>
                 <p>P50 delivery fee for orders</p>
@@ -631,20 +859,66 @@
         </div>
     </section>
 
-    <a class="whatsapp" href="https://wa.me/26774531063">WhatsApp</a>
+    <!-- CONTACT (final section) -->
+    <section id="contact" class="alt">
+        <h2 class="section-title">Contact Ice Lab</h2>
+        <div class="cards reveal">
+            <div class="card contact">
+                <h3>WhatsApp</h3>
+                <p>+267 74 531 063</p>
+            </div>
+            <div class="card contact">
+                <h3>Business Hours</h3>
+                <p>Open Daily</p>
+            </div>
+            <div class="card contact">
+                <h3>Location</h3>
+                <p>Broadhurst,Gaborone</p>
+            </div>
+        </div>
+    </section>
+
+    <a class="whatsapp" href="https://wa.me/26774531063" target="_blank" rel="noopener noreferrer">WhatsApp</a>
 
     <footer>© 2026 ICELAB (Designed by-Rebaone Lesly Mochabeng). All Rights Reserved.</footer>
 
     <script>
+        /* SCROLL-TRIGGERED REVEAL */
+        let revealTargets = document.querySelectorAll(".reveal");
+        let revealObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("in-view");
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: .15 });
+        revealTargets.forEach(function (el) { revealObserver.observe(el); });
+
+        /* BUTTON RIPPLE */
+        document.querySelectorAll(".btn").forEach(function (btn) {
+            btn.addEventListener("click", function (e) {
+                let rect = btn.getBoundingClientRect();
+                let circle = document.createElement("span");
+                let size = Math.max(rect.width, rect.height);
+                circle.className = "ripple";
+                circle.style.width = circle.style.height = size + "px";
+                circle.style.left = (e.clientX - rect.left - size / 2) + "px";
+                circle.style.top = (e.clientY - rect.top - size / 2) + "px";
+                btn.appendChild(circle);
+                setTimeout(function () { circle.remove(); }, 600);
+            });
+        });
+
         /* NAVBAR HIDE ON SCROLL */
         let lastScroll = 0;
         window.addEventListener("scroll", function () {
             let nav = document.getElementById("navbar");
             let currentScroll = window.scrollY;
             if (currentScroll > lastScroll && currentScroll > 100) {
-                nav.style.transform = "translateY(-100%)";
+                nav.classList.add("hidden");
             } else {
-                nav.style.transform = "translateY(0)";
+                nav.classList.remove("hidden");
             }
             lastScroll = currentScroll;
         });
@@ -882,41 +1156,91 @@
             }
         }
 
+        /* Strip line breaks and control characters so a field value can't
+           inject extra lines into the structured WhatsApp message. */
+        function sanitizeField(value, maxLen) {
+            return value
+                .replace(/[\r\n\t]/g, ' ')
+                .replace(/[\u0000-\u001F\u007F]/g, '')
+                .trim()
+                .slice(0, maxLen);
+        }
+
         /* SEND ORDER TO WHATSAPP */
         function sendOrder(e) {
             e.preventDefault();
 
-            let name = document.getElementById("name").value;
-            let phone = document.getElementById("phone").value;
+            // Honeypot: if this hidden field got filled in, silently drop the submission
+            if (document.getElementById("company").value.trim() !== "") {
+                return;
+            }
+
+            let name = sanitizeField(document.getElementById("name").value, 60);
+            let phone = sanitizeField(document.getElementById("phone").value, 20);
             let zone = document.getElementById("zone").value;
-            let location = document.getElementById("location").value;
-            let date = document.getElementById("date").value;
+            let zoneLabel = zone === "gaborone" ? "Within Gaborone" : "Surrounding Areas";
+            let location = sanitizeField(document.getElementById("location").value, 120);
+            let dateRaw = document.getElementById("date").value;
             let time = document.getElementById("time").value;
             let iceType = document.getElementById("iceType").value;
-            let bags = document.getElementById("bags").value;
-            let notes = document.getElementById("notes").value;
+            let iceTypeLabel = iceType === "cube" ? "Cube Ice" : "Block Ice";
+            let bags = Math.max(1, Math.min(500, parseInt(document.getElementById("bags").value) || 0));
+            let notes = sanitizeField(document.getElementById("notes").value, 300) || "None";
             let price = document.getElementById("total").innerText;
 
+            // Format the date as "23 Jul 2026" instead of the raw yyyy-mm-dd value
+            let dateLabel = dateRaw;
+            if (dateRaw) {
+                let parsedDate = new Date(dateRaw + "T00:00:00");
+                if (!isNaN(parsedDate)) {
+                    dateLabel = parsedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+                }
+            }
+
             let pinLine = (pinnedLat !== null && pinnedLng !== null)
-                ? `\nPinned Location: https://www.google.com/maps?q=${pinnedLat},${pinnedLng}`
+                ? `\n📍 *Map Pin:* https://www.google.com/maps?q=${pinnedLat},${pinnedLng}`
                 : "";
 
-            let message = `ICE LAB ORDER
-Name: ${name}
-Phone: ${phone}
-Delivery Area: ${zone}
-Location: ${location}${pinLine}
-Delivery Date: ${date}
-Delivery Time: ${time}
-Ice Type: ${iceType}
-Quantity: ${bags}
-Estimated Price: P${price}
-Notes: ${notes}`;
+            // WhatsApp renders *text* as bold and single newlines as line breaks,
+            // so this lays out as clean, aligned bold-label rows on arrival.
+            let message = `🧊 *ICE LAB — NEW ORDER*
 
-            let whatsapp = "https://wa.me/26774531063?text=" + encodeURIComponent(message);
-            window.open(whatsapp, "_blank");
+*Name:* ${name}
+*Phone:* ${phone}
+*Delivery Area:* ${zoneLabel}
+*Location:* ${location}${pinLine}
+*Delivery Date:* ${dateLabel}
+*Delivery Time:* ${time}
+*Ice Type:* ${iceTypeLabel}
+*Quantity:* ${bags}
+*Estimated Total:* P${price}
+*Notes:* ${notes}`;
+
+            let whatsappUrl = "https://wa.me/26774531063?text=" + encodeURIComponent(message);
+
+            // Try opening in a new tab first; if a popup blocker stops it,
+            // fall back to redirecting this tab so the order is never lost.
+            // (Note: passing "noopener" as a window feature makes window.open
+            // always return null, so opener is stripped manually instead —
+            // that keeps the return value usable for detecting a blocked popup.)
+            let opened = window.open(whatsappUrl, "_blank");
+            if (opened) {
+                opened.opener = null;
+            } else {
+                window.location.href = whatsappUrl;
+            }
         }
     </script>
+
+    <!-- Visible fallback: if the browser silently blocks the popup, this link
+         still carries the same order details across so nothing gets lost -->
+    <noscript>
+        <p style="text-align:center; padding: 16px; color: var(--ink-dim);">
+            Enable JavaScript, or message us directly on
+            <a href="https://wa.me/26774531063" style="color: var(--accent);">WhatsApp</a>
+            to place your order.
+        </p>
+    </noscript>
 
 </body>
 
