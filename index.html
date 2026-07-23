@@ -713,21 +713,27 @@
             nav {
                 top: 12px;
                 width: calc(100% - 24px);
-                padding: 12px 16px;
+                padding: 12px 14px 12px 18px;
                 border-radius: 14px;
+                gap: 10px;
             }
 
             .logo {
-                font-size: 19px;
+                font-size: 18px;
+                flex-shrink: 0;
             }
 
             nav .links {
                 display: flex;
-                gap: 14px;
+                align-items: center;
+                gap: 20px;
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
                 scrollbar-width: none;
-                max-width: 62vw;
+                max-width: 60vw;
+                padding: 4px 6px 4px 2px;
+                mask-image: linear-gradient(to right, transparent 0, black 14px, black calc(100% - 10px), transparent 100%);
+                -webkit-mask-image: linear-gradient(to right, transparent 0, black 14px, black calc(100% - 10px), transparent 100%);
             }
 
             nav .links::-webkit-scrollbar {
@@ -736,8 +742,10 @@
 
             nav .links a {
                 margin-left: 0;
-                font-size: 11px;
+                font-size: 11.5px;
+                letter-spacing: .6px;
                 white-space: nowrap;
+                flex-shrink: 0;
             }
 
             .hero {
@@ -970,8 +978,8 @@
         <h2 class="section-title">Contact Ice Lab</h2>
         <div class="cards reveal">
             <div class="card contact">
-                <h3>Call</h3>
-                <p>+267 73 749 522</p>
+                <h3>WhatsApp</h3>
+                <p>+267 74 531 063</p>
             </div>
             <div class="card contact">
                 <h3>Business Hours</h3>
@@ -1051,10 +1059,12 @@
             "Extension 51", "Extension 52", "Extension 53", "Extension 54", "Extension 58",
             "Extension 59", "Extension 60", "Extension 61", "Extension 62", "Extension 63",
             "Extension 64", "Extension 66", "Extension 68", "Extension 71", "Extension 72",
-            "Gaborone West Phase 1", "Gaborone West Phase 2", "Gaborone North", "Gaborone CBD",
+            "Gaborone West", "Phase 2", "Gaborone North", "Gaborone CBD",
             "The Village", "Bontleng", "Naledi", "Old Naledi", "White City", "Ledumang",
             "Kgale View", "Block 3", "Block 5", "Block 6", "Block 7", "Block 8", "Block 9",
-            "Block 10", "Phakalane", "Tlokweng", "Mogoditshane", "Broadhurst"
+            "Block 10", "Phakalane", "Tlokweng", "Mogoditshane", "Broadhurst", "Ledumang",
+            "Tsholofelo East", "Tsholofelo West", "Glen Valley", "Maruapula", "Partial",
+            "Tshweneng", "Phase 4", "Kgale"
         ];
 
         function localMatches(rawQuery) {
